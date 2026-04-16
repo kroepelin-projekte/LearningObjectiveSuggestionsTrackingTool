@@ -354,6 +354,7 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                 $optionsFields['course_' . $course['obj_id']] = $sectionCheckboxes;
             }
         }
+
         if (!empty($coursesWithActivatedEMentoring)) {
             $optionsFields['ementoring'] = $this->factory->input()->field()->checkbox(
                 $this->pl->txt('ementoring')
@@ -619,7 +620,7 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
 
                 $suggested = false;
                 if((int) $weightRough > 0) {
-                    $suggested = true;
+                    $suggested = $sort_arr['suggested'];
                 }
 
                 foreach ($finalTestsStates_course as $finalTestsState) {
