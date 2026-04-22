@@ -231,7 +231,14 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
         global $DIC;
 
         if ($DIC->user()->isAnonymous()) {
-            return '';
+            return ' ';
+        }
+
+        if ($a_mode === 'presentation' && !empty($a_properties)) {
+            $participants = ilCourseParticipants::getInstance($a_properties['ref_id']);
+            if (!$participants->isAssigned($DIC->user()->getId())) {
+                return ' ';
+            }
         }
 
         $this->pluginTemplate();
