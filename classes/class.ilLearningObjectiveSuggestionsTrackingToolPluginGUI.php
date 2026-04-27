@@ -538,7 +538,6 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                 $learningObjectives = $this->getLearningObjectives($sorted, $finalTestsStates[$this->userId]);
             }
 
-
             if( !empty($finalTestsStates[$this->userId])) {
                 $trackingToolData = $this->getTrackingToolData($finalTestsStates, $this->userId);
 
@@ -623,12 +622,6 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
             if (array_key_exists($sort_key, $finalTestsStatesUser)) {
                 /** @var ilLearnObjectFinalTestState $finalTestsState */
                 $finalTestsStates_course = $finalTestsStatesUser[$sort_key];
-                $weightRough = $this->getWeightRough((int) $sort_arr['obj_id'], (int) $sort_arr['objective_id']);
-
-                $suggested = false;
-                if((int) $weightRough > 0) {
-                    $suggested = $sort_arr['suggested'];
-                }
 
                 foreach ($finalTestsStates_course as $finalTestsState) {
                     $learningObjectives[$finalTestsState->getLocftestCrsObjId()] = array(
@@ -638,7 +631,7 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                         'default' => true,
                         'score' => $sort_arr['score'],
                         'width' => 'auto',
-                        'suggested' => $suggested,
+                        'suggested' => $sort_arr['suggested'],
                     );
                 }
             }
@@ -1406,8 +1399,13 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                  * @var getLearnSugg $sugg
                  */
                 if ($score->getObjectiveId() == $sugg->getSuggObjectiveId()) {
-                    $suggested = true;
-                    break;
+
+                    $weightRough = $this->getWeightRough((int) $score->getCourseObjId(), (int) $score->getObjectiveId());
+
+                    if ($weightRough > 0) {
+                        $suggested = true;
+                        break;
+                    }
                 }
             }
             $sorting[$score->getObjectiveId()] = [
@@ -1419,6 +1417,7 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                 'suggested' => $suggested
             ];
         }
+
         return $sorting;
     }
 
