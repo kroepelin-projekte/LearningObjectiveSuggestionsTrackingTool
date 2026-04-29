@@ -336,9 +336,10 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                     $this->pl->txt('suggested_courses')
                 )->withDedicatedName('course_suggested_courses_' . $course['obj_id']);
 
-                $checkboxes['course_personalized_additional_offer_' . $course['obj_id'] ] = $this->factory->input()->field()->checkbox(
-                    $this->pl->txt('personalized_additional_offer')
-                )->withDedicatedName('course_personalized_additional_offer_'  . $course['obj_id']);
+                $checkboxes['course_not_suggested_courses_' . $course['obj_id'] ] = $this->factory->input()->field()->checkbox(
+                    $this->pl->txt('not_suggested_courses')
+                )->withDedicatedName('course_not_suggested_courses_'  . $course['obj_id']);
+
 
                 $checkboxes['course_entry_test_' . $course['obj_id']] = $this->factory->input()->field()->checkbox(
                     $this->pl->txt('entry_test_label')
@@ -370,6 +371,14 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
             $optionsFields['homework'] = $this->factory->input()->field()->checkbox(
                 $this->pl->txt('homework')
             )->withDedicatedName('homework');
+
+            $optionsFields['individual_assesments'] = $this->factory->input()->field()->checkbox(
+                $this->pl->txt('individual_assesments')
+            )->withDedicatedName('individual_assesments');
+
+            $optionsFields['sessions'] = $this->factory->input()->field()->checkbox(
+                $this->pl->txt('sessions')
+            )->withDedicatedName('sessions');
         }
         $fields = array_merge($userFields, $info, $optionsFields);
 
@@ -394,6 +403,8 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                 const lastname = $('#$id input[name="form/user_data/lastname"]');
                 const eMentoring = $('#$id fieldset[data-il-ui-input-name="form/ementoring"] input[name="form/ementoring"]');
                 const homework = $('#$id fieldset[data-il-ui-input-name="form/homework"]');
+                const individualAssesments = $('#$id fieldset[data-il-ui-input-name="form/individual_assesments"]');
+                const sessions = $('#$id fieldset[data-il-ui-input-name="form/sessions"]');
                 
                 submitButton.attr('disabled', true);
                 
@@ -424,8 +435,12 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                 eMentoring.change(function() {
                   if($(this).is(':checked')) {
                     homework.css('display', 'grid');
+                    individualAssesments.css('display', 'grid');
+                    sessions.css('display', 'grid');
                   } else {
                     homework.css('display', 'none');
+                    individualAssesments.css('display', 'none');
+                    sessions.css('display', 'none');
                   }
                 }); 
                 
@@ -1206,6 +1221,16 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
             $homework = true;
         }
 
+        $individualAssesments = false;
+        if ($request->has('form/individual_assesments')) {
+            $individualAssesments = true;
+        }
+
+        $sessions = false;
+        if ($request->has('form/sessions')) {
+            $sessions = true;
+        }
+
         $userId = $this->dic->user()->getId();
         $courses = $this->getUserCourses($userId);
 
@@ -1217,7 +1242,7 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
             }
 
             if ($request->has(
-                'form/options_' . $course['obj_id'] . '/course_personalized_additional_offer_' . $course['obj_id']
+                'form/options_' . $course['obj_id'] . '/course_not_suggested_courses_' . $course['obj_id']
             )) {
                 $coursesToPrint[$course['obj_id']]['additional_offer'] = true;
             }
@@ -1281,6 +1306,8 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                 isset($course['additional_offer']),
                 isset($course['entry_test']),
                 $homework,
+                $individualAssesments,
+                $sessions,
                 $firstname,
                 $lastname
             );
@@ -1312,7 +1339,9 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                 $lastname,
                 $this->dic->user()->getId(),
                 true,
-                $homework
+                $homework,
+                $individualAssesments,
+                $sessions,
             );
         }
     }

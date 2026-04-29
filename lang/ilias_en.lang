@@ -18,7 +18,7 @@ ref_id#:#Ref Id
 firstname#:#Firstname
 lastname#:#Lastname
 suggested_courses#:#Suggested Courses
-personalized_additional_offer#:#Personalized additional program
+not_suggested_courses#:#Not suggested courses
 entry_test#:#>> My results in Entry-Check
 entry_test_label#:#Final Test-Check
 modal_box_info#:#Notice: The data entered here will be stored in accordance with the privacy policy of this platform.
@@ -30,3 +30,5 @@ entry_test_display#:#Display Entry Text
 print_certificate#:#Certificate Print
 homework#:#Homework
 no_courses_selected#:#No course selected
+individual_assesments#:#Individual Assesments
+sessions#:#Sessions

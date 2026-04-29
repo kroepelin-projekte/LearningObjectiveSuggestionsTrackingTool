@@ -18,7 +18,7 @@ ref_id#:#Ref Id
 firstname#:#Vorname
 lastname#:#Nachname
 suggested_courses#:#Empfohlene Kurse
-personalized_additional_offer#:#Individuelles Zusatzangebot
+not_suggested_courses#:#Nicht-Empfohlene Kurse
 entry_test#:#>> Meine Ergebnisse im Vorwissen-Check
 entry_test_label#:#Lernzuwachs-Check
 modal_box_info#:#Hinweis: Die hier eingegebenen Daten werden gemäß der Datenschutzerklärung dieser Platform gespeichert.
@@ -30,3 +30,5 @@ entry_test_display#:#Einstiegsstest Anzeigen
 print_certificate#:#Teilnahmebescheinigung Drucken
 homework#:#Übungen
 no_courses_selected#:#Sie haben keine Kurse ausgewählt
+individual_assesments#:#Individuelle Bewertungen
+sessions#:#Sitzungen
