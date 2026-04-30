@@ -340,7 +340,6 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                     $this->pl->txt('not_suggested_courses')
                 )->withDedicatedName('course_not_suggested_courses_'  . $course['obj_id']);
 
-
                 $checkboxes['course_entry_test_' . $course['obj_id']] = $this->factory->input()->field()->checkbox(
                     $this->pl->txt('entry_test_label')
                 )->withDedicatedName('course_entry_test_' . $course['obj_id']);
@@ -1286,6 +1285,26 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
         }
 
         if (count(array_keys($coursesToPrint)) === 1) {
+
+            $learningObjectives = $this->getTrackingToolLearningObjectives($course['ref_id'] ?? null);
+            $notRecommendedLearningObjectives = [];
+            foreach ($learningObjectives as $key => $learningObjective) {
+                if (!$learningObjective['suggested']) {
+                    $notRecommendedLearningObjectives[$key] = $learningObjective;
+                }
+            }
+
+
+            $completedNotRecommendedLearningObjectives = 0;
+            foreach ($notRecommendedLearningObjectives as $notRecommendedLearningObjective) {
+                if ($notRecommendedLearningObjective['count_completed_courses'] === count($notRecommendedLearningObjective['courses'])) {
+                    $completedNotRecommendedLearningObjectives++;
+                }
+            }
+
+            $notSuggestedCoursesText = $completedNotRecommendedLearningObjectives . '/' . count($notRecommendedLearningObjectives);
+
+
             $objCourseId = array_keys($coursesToPrint)[0];
             $course = $coursesToPrint[$objCourseId];
 
@@ -1309,7 +1328,8 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                 $individualAssesments,
                 $sessions,
                 $firstname,
-                $lastname
+                $lastname,
+                $notSuggestedCoursesText
             );
 
         } else {
