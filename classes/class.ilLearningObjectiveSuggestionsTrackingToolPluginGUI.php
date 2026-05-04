@@ -487,13 +487,13 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                             URL.revokeObjectURL(url);
                     
                             // 5) Redirect after download
-                            redirection();
+                            //redirection();
                         } else {
-                            redirection();
+                            //redirection();
                         }
                     },
                     error: function (xhr, status, error) {
-                        redirection()
+                        //redirection()
                     }
                 });
                 
@@ -755,6 +755,7 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
             }
         }
 
+
         $htmlSuggestedCourses = $this->getAccordionHtml(
             $learningObjectives,
             $index,
@@ -809,6 +810,7 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
         ?int $totalSuggestions = null
     ): string {
         $html = '';
+
         foreach ($learningObjectives as $learningObjectiveObjId => $learningObjective) {
             $classStatusCourses = 'completed';
             if ($learningObjective['count_completed_courses'] < count($learningObjective['courses'])) {
@@ -1284,29 +1286,40 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
             exit;
         }
 
+        $notRecommendedLearningObjectives = [];
         if (count(array_keys($coursesToPrint)) === 1) {
 
-            $learningObjectives = $this->getTrackingToolLearningObjectives($course['ref_id'] ?? null);
-            $notRecommendedLearningObjectives = [];
-            foreach ($learningObjectives as $key => $learningObjective) {
-                if (!$learningObjective['suggested']) {
-                    $notRecommendedLearningObjectives[$key] = $learningObjective;
+            foreach ($coursesToPrint as $courseObjectId => $course) {
+                $learningObjectives = $this->getTrackingToolLearningObjectives($this->fetchUrlParameter('tracking_tool_ref_id', FILTER_DEFAULT) ?? null);
+                foreach ($learningObjectives as $key => $learningObjective) {
+                    if (!$learningObjective['suggested']) {
+                        $notRecommendedLearningObjectives[$key] = $learningObjective;
+                    }
                 }
             }
 
-
-            $completedNotRecommendedLearningObjectives = 0;
-            foreach ($notRecommendedLearningObjectives as $notRecommendedLearningObjective) {
+            $notRecommendedLearningObjectivesCompleted = 0;
+            $notSuggestedCourses = [];
+            foreach ($notRecommendedLearningObjectives as $learningObjectiveObjectId => $notRecommendedLearningObjective) {
+                $notSuggestedCourses[$courseObjectId][$learningObjectiveObjectId] = false;
                 if ($notRecommendedLearningObjective['count_completed_courses'] === count($notRecommendedLearningObjective['courses'])) {
-                    $completedNotRecommendedLearningObjectives++;
+                    $notSuggestedCourses[$courseObjectId][$learningObjectiveObjectId] = true;
                 }
             }
 
-            $notSuggestedCoursesText = $completedNotRecommendedLearningObjectives . '/' . count($notRecommendedLearningObjectives);
-
+            foreach ($notSuggestedCourses as $courseObjectId => $notSuggestedLearningObjective) {
+                $sumLearningObjectiveCompleted = 0;
+                foreach ($notSuggestedLearningObjective as $learningObjectiveCompleted) {
+                    if ($learningObjectiveCompleted) {
+                        $sumLearningObjectiveCompleted++;
+                    }
+                }
+                $notSuggestedCourses[$courseObjectId] = $sumLearningObjectiveCompleted . '/' . count($notSuggestedLearningObjective);
+            }
 
             $objCourseId = array_keys($coursesToPrint)[0];
             $course = $coursesToPrint[$objCourseId];
+            $course['not_suggested_courses'] = $notSuggestedCourses[$objCourseId];
 
             $twigParser = new ilParticipationCertificateTwigParser(
                 $course['ref_id'],
@@ -1329,11 +1342,10 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                 $sessions,
                 $firstname,
                 $lastname,
-                $notSuggestedCoursesText
+                $course['not_suggested_courses']
             );
 
         } else {
-
             $twigParser = new ilParticipationCertificateTwigParser(
                 null,
                 [$this->userId],
@@ -1347,11 +1359,100 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                                 ->internal()
                                 ->domain();
 
-            foreach ($coursesToPrint as $key => $course) {
+            /*foreach ($coursesToPrint as $key => $course) {
                 $courseContainerId = $this->dic->repositoryTree()->getParentId($course['ref_id']);
                 $groupRefId = $this->getGroupOfContainer($courseContainerId, $domain);
                 $coursesToPrint[$key]['group_id'] = $groupRefId;
+                // TODO
+
+                $learningObjectives = $this->getTrackingToolLearningObjectives($course['ref_id'] ?? null);
+                $notRecommendedLearningObjectives = [];
+
+                foreach ($learningObjectives as $k => $learningObjective) {
+                    if (!$learningObjective['suggested']) {
+                        $notRecommendedLearningObjectives[$k] = $learningObjective;
+                    }
+                }
+                $sumNotRecommendedLearningObjectivesCompleted = 0;
+                foreach ($notRecommendedLearningObjectives as $k => $notRecommendedLearningObjective) {
+                    if ($notRecommendedLearningObjective['count_completed_courses'] === count($notRecommendedLearningObjective['courses'])) {
+                        $sumNotRecommendedLearningObjectivesCompleted++;
+                    }
+                }
+                $notSuggestedCourses = $sumNotRecommendedLearningObjectivesCompleted . '/' . count($notRecommendedLearningObjectives);
+
+                c[$key]['not_suggested_courses'] = $notSuggestedCourses;
+            }*/
+
+
+            foreach ($coursesToPrint as $courseObjectId => $course) {
+                $learningObjectives = $this->getTrackingToolLearningObjectives($course['ref_id']);
+
+                foreach ($learningObjectives as $key => $learningObjective) {
+                    if (!$learningObjective['suggested']) {
+                        $notRecommendedLearningObjectives[$key] = $learningObjective;
+
+                        dd($notRecommendedLearningObjectives);
+                    }
+                }
+
+
+
+                $notRecommendedLearningObjectivesCompleted = 0;
+                $notSuggestedCourses = [];
+                foreach ($notRecommendedLearningObjectives as $learningObjectiveObjectId => $notRecommendedLearningObjective) {
+                    /*$notSuggestedCourses[$courseObjectId][$learningObjectiveObjectId] = false;*/
+                    $notSuggestedCourses[$learningObjectiveObjectId] = false;
+                    if ($notRecommendedLearningObjective['count_completed_courses'] === 2/* TODO count($notRecommendedLearningObjective['courses'])*/)  {
+                        /*$notSuggestedCourses[$courseObjectId][$learningObjectiveObjectId] = true;*/
+                        $notSuggestedCourses[$learningObjectiveObjectId] = true;
+                    }
+                }
+
+                $sumLearningObjectiveCompleted = 0;
+                foreach ($notSuggestedCourses as $learningObjectiveObjectId => $learningObjectiveCompleted) {
+
+                    dd($notSuggestedCourses);
+
+                    if ($learningObjectiveCompleted) {
+                        $sumLearningObjectiveCompleted++;
+                    }
+                }
+                $notSuggestedCourses[$courseObjectId] = $sumLearningObjectiveCompleted . '/' . count($notRecommendedLearningObjectives);
+
+
+
+
+
             }
+
+            dd($notSuggestedCourses);
+            /*
+            $notRecommendedLearningObjectivesCompleted = 0;
+            $notSuggestedCourses = [];
+            foreach ($notRecommendedLearningObjectives as $learningObjectiveObjectId => $notRecommendedLearningObjective) {
+                $notSuggestedCourses[$courseObjectId][$learningObjectiveObjectId] = false;
+                if ($notRecommendedLearningObjective['count_completed_courses'] >= (count($notRecommendedLearningObjective['courses']) / 2))  {
+                    $notSuggestedCourses[$courseObjectId][$learningObjectiveObjectId] = true;
+                }
+            }
+
+            foreach ($notSuggestedCourses as $courseObjectId => $notSuggestedLearningObjective) {
+                $sumLearningObjectiveCompleted = 0;
+                foreach ($notSuggestedLearningObjective as $learningObjectiveCompleted) {
+                    if ($learningObjectiveCompleted) {
+                        $sumLearningObjectiveCompleted++;
+                    }
+                }
+                $notSuggestedCourses[$courseObjectId] = $sumLearningObjectiveCompleted . '/' . count($notSuggestedLearningObjective);
+            }
+
+
+            dd($coursesToPrint);
+
+            dd($notSuggestedCourses);*/
+
+            // TODO
 
             $twigParser->parseDataMultipleCourses(
                 $coursesToPrint,
