@@ -878,12 +878,28 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
         $this->tpl->setVariable('HTML_SUGGESTED_COURSES', $htmlSuggestedCourses);
 
         if(!empty($propertiesRefId)) {
-            $printLink = $this->buildPrintLink($propertiesRefId);
-            $printButton = '<a href="' . $printLink . '" class="print-button-visible">';
-            $printButton .= '<img src="Customizing/global/plugins/Services/COPage/PageComponent/LearningObjectiveSuggestionsTrackingTool/templates/images/icon_file.svg" class="icon-file">';
-            $printButton .= '</a>';
+            $courses = $this->getUserCourses($this->userId);
 
-            $this->tpl->setVariable('PRINT_BUTTON', $printButton);
+            $accessToPrint = false;
+            foreach ($courses as $course) {
+                $courseRefId = $this->getCourseRefId($course['obj_id']);
+                $certificateAccess = new ilParticipationCertificateAccess($courseRefId);
+
+                if ($certificateAccess->isSelfPrintEnabled()) {
+                    $accessToPrint = true;
+                }
+            }
+
+            if (!$accessToPrint) {
+                $this->tpl->setVariable('PRINT_BUTTON', '');
+            } else {
+                $printLink = $this->buildPrintLink($propertiesRefId);
+                $printButton = '<a href="' . $printLink . '" class="print-button-visible">';
+                $printButton .= '<img src="Customizing/global/plugins/Services/COPage/PageComponent/LearningObjectiveSuggestionsTrackingTool/templates/images/icon_file.svg" class="icon-file">';
+                $printButton .= '</a>';
+
+                $this->tpl->setVariable('PRINT_BUTTON', $printButton);
+            }
         }
 
         $templateVariables = [
