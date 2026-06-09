@@ -334,9 +334,9 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                     $this->pl->txt('not_suggested_courses')
                 )->withDedicatedName('course_not_suggested_courses_'  . $course['obj_id']);
 
-                $checkboxes['course_entry_test_' . $course['obj_id']] = $this->factory->input()->field()->checkbox(
-                    $this->pl->txt('entry_test_label')
-                )->withDedicatedName('course_entry_test_' . $course['obj_id']);
+                $checkboxes['course_final_test_' . $course['obj_id']] = $this->factory->input()->field()->checkbox(
+                    $this->pl->txt('final_test_label')
+                )->withDedicatedName('course_final_test_' . $course['obj_id']);
 
                 $userCourseRefIds = ilObject::_getAllReferences($course['obj_id']);
                 $userCourseRefId = array_shift($userCourseRefIds);
@@ -1073,8 +1073,8 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                 $coursesToPrint[$course['obj_id']]['additional_offer'] = true;
             }
 
-            if ($request->has('form/options_' . $course['obj_id'] . '/course_entry_test_' . $course['obj_id'])) {
-                $coursesToPrint[$course['obj_id']]['entry_test'] = true;
+            if ($request->has('form/options_' . $course['obj_id'] . '/course_final_test_' . $course['obj_id'])) {
+                $coursesToPrint[$course['obj_id']]['final_test'] = true;
             }
 
             if (!empty($coursesToPrint[$course['obj_id']])) {
@@ -1130,7 +1130,7 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                 $course['ref_id'],
                 isset($course['suggested_courses']),
                 isset($course['additional_offer']),
-                isset($course['entry_test']),
+                isset($course['final_test']),
                 $homework,
                 $individualAssesments,
                 $sessions,
