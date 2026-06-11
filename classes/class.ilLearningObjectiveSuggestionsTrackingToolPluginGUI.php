@@ -335,7 +335,7 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                 )->withDedicatedName('course_not_suggested_courses_'  . $course['obj_id']);
 
                 $checkboxes['course_final_test_' . $course['obj_id']] = $this->factory->input()->field()->checkbox(
-                    $this->pl->txt('final_test_label')
+                    $this->pl->txt('final_test')
                 )->withDedicatedName('course_final_test_' . $course['obj_id']);
 
                 $userCourseRefIds = ilObject::_getAllReferences($course['obj_id']);
