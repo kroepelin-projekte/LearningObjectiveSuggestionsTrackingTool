@@ -564,7 +564,6 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
             }
         }
 
-
         $htmlSuggestedCourses = $this->getAccordionHtml(
             $learningObjectives,
             $index,
@@ -740,10 +739,13 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
     ): string {
         $entryTest = $this->getDataEntryTest($courseObjId);
 
-        $linkEntryTestResults = $this->buildEntryTestResultsLink((int) $entryTest['itest']);
-        $entryTestLink = $this->factory->link()->standard($this->pl->txt('entry_test'), $linkEntryTestResults);
+        if (!empty($entryTest)) {
+            $linkEntryTestResults = $this->buildEntryTestResultsLink((int) $entryTest['itest']);
+            $entryTestLink = $this->factory->link()->standard($this->pl->txt('entry_test'), $linkEntryTestResults);
 
-        return $this->renderer->render($entryTestLink);
+            return $this->renderer->render($entryTestLink);
+        }
+        return '';
     }
 
     /**
