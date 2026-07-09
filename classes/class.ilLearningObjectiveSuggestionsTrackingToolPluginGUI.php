@@ -236,7 +236,6 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
         if (!empty($a_properties)) {
             $learningObjectives = TrackingTool::getTrackingToolLearningObjectives(
                 $DIC->user()->getId(),
-                true,
                 $a_properties['ref_id'] ?? null
             );
 
@@ -709,9 +708,10 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
             $html .= '<div class="tracking-tool-panel" id="tracking-tool-panel-' . $learningObjectiveObjId . '-' . $this->userId . '">';
             $html .= '<div class="tracking-tool-test-required-percentage">';
             $html .= '</div>';
+
             $html .= $this->buildAccordionDropdownHtml(
                 $learningObjective['courses'],
-                $learningObjective['required_percentage'],
+                $learningObjective['required_percentage']
             );
 
             $html .= '<div class="percent-line" style="width: ' . ($learningObjective['required_percentage'] ?? 0) . '%;">';
@@ -779,7 +779,7 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
      */
     private function buildAccordionDropdownHtml(
         array $learningObjectiveCourses,
-        ?int $requiredPercentage = null
+        ?int $requiredPercentage = null,
     ): string {
         $html = '';
         foreach ($learningObjectiveCourses as $k => $course) {
@@ -788,7 +788,7 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
 
             $targetLineClass = 'target-line';
 
-            if ($course['test_percentage'] >= $requiredPercentage) {
+            if ($course['test_percentage'] >= $course['test_required_percentage']) {
                 $targetLineClass .= '-reached';
             }
 
