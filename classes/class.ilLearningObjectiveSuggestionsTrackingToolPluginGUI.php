@@ -318,6 +318,7 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
 
         $optionsFields = [];
         $coursesWithActivatedEMentoring = [];
+
         foreach ($courses as $course) {
             $courseRefId = $this->getCourseRefId($course['obj_id']);
             $certificateAccess = new ilParticipationCertificateAccess($courseRefId);
@@ -364,9 +365,6 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                 $this->pl->txt('homework')
             )->withDedicatedName('homework');
 
-            $optionsFields['individual_assesments'] = $this->factory->input()->field()->checkbox(
-                $this->pl->txt('individual_assesments')
-            )->withDedicatedName('individual_assesments');
 
             $optionsFields['sessions'] = $this->factory->input()->field()->checkbox(
                 $this->pl->txt('sessions')
@@ -1049,11 +1047,6 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
             $homework = true;
         }
 
-        $individualAssesments = false;
-        if ($request->has('form/individual_assesments')) {
-            $individualAssesments = true;
-        }
-
         $sessions = false;
         if ($request->has('form/sessions')) {
             $sessions = true;
@@ -1064,6 +1057,7 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
 
         $coursesToPrint = [];
         $printError = false;
+
         foreach ($courses as $course) {
             if ($request->has('form/options_' . $course['obj_id'] . '/course_suggested_courses_' . $course['obj_id'])) {
                 $coursesToPrint[$course['obj_id']]['suggested_courses'] = true;
@@ -1134,7 +1128,6 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                 isset($course['additional_offer']),
                 isset($course['final_test']),
                 $homework,
-                $individualAssesments,
                 $sessions,
                 $firstname,
                 $lastname
@@ -1167,7 +1160,6 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                 $this->dic->user()->getId(),
                 true,
                 $homework,
-                $individualAssesments,
                 $sessions
             );
         }
