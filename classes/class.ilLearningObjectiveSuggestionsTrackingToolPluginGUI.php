@@ -19,17 +19,17 @@ use JetBrains\PhpStorm\NoReturn;
  * @ilCtrl_isCalledBy ilLearningObjectiveSuggestionsTrackingToolPluginGUI: ilUIPluginRouterGUI
  * /
  */
-class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponentPluginGUI
+class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponentPluginGUI implements ilCtrlSecurityInterface
 {
-    const CMD_PRINT_CERTIFICATE = 'printCertificate';
+    public const string CMD_PRINT_CERTIFICATE = 'printCertificate';
 
-    const CMD_CREATE = 'create';
+    public const string CMD_CREATE = 'create';
 
-    const CMD_EDIT = 'edit';
+    public const string CMD_EDIT = 'edit';
 
-    const CMD_UPDATE = 'update';
+    public const string CMD_UPDATE = 'update';
 
-    const CMD_CANCEL = 'cancel';
+    public const string CMD_CANCEL = 'cancel';
 
     private $tpl;
 
@@ -57,6 +57,22 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
         $this->factory = $this->dic->ui()->factory();
         $this->renderer = $this->dic->ui()->renderer();
         $this->userId = $DIC->user()->getId();
+    }
+
+    /**
+     * @return array|string[]
+     */
+    public function getUnsafeGetCommands(): array
+    {
+        return [];
+    }
+
+    /**
+     * @return array|string[]
+     */
+    public function getSafePostCommands(): array
+    {
+        return [];
     }
 
     /**
