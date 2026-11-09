@@ -33,3 +33,5 @@ no_courses_selected#:#No course selected
 individual_assesments#:#Individual Assesments
 sessions#:#Sessions
 final_test#:#Final Test
+updated_success#:#Tracking tool saved.
+updated_failure#:#Please enter the ref ID of an existing course.
