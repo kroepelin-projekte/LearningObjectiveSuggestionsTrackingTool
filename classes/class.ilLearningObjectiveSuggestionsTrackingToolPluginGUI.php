@@ -65,7 +65,10 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
      */
     public function getUnsafeGetCommands(): array
     {
-        return [self::CMD_PRINT_CERTIFICATE];
+        return [
+            self::CMD_CREATE,
+            self::CMD_PRINT_CERTIFICATE
+        ];
     }
 
     /**
@@ -134,10 +137,10 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
         $properties = $this->getProperties();
 
         $field = $this->factory->input()->field();
-        $storedRefId = (string) ($properties['ref_id'] ?? 0);
+        $storedRefId = (int) ($properties['ref_id'] ?? 0);
         $inputRefId = $field->text($this->plugin->txt('ref_id'))
                             ->withRequired(true)
-                            ->withValue($storedRefId > 0 ? $storedRefId : null);
+                            ->withValue($storedRefId > 0 ? (string) $storedRefId : null);
 
         $inputEntryTest = $field->checkbox($this->plugin->txt('entry_test_display'))
                             ->withValue(!empty($properties['entry_test']));
@@ -156,14 +159,6 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
     /**
      * @return void
      */
-    private function saveConfig(): void
-    {
-
-    }
-
-    /**
-     * @return void
-     */
     public function create(): void
     {
         global $DIC;
@@ -171,7 +166,7 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
         $properties = [];
         if ($this->createElement($properties)) {
             $tpl = $DIC->ui()->mainTemplate();
-            $tpl->setOnScreenMessage('success', 'Tracking Tool wurde angelegt', true);
+            $tpl->setOnScreenMessage('success', $this->plugin->txt('tracking_tool_created'), true);
             $this->returnToParent();
         }
 
@@ -385,7 +380,7 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
 
                 $sectionCheckboxes = $this->factory->input()->field()->section(
                     $checkboxes,
-                    ilObjCourse::_lookupTitle($course['obj_id']),
+                    htmlspecialchars(ilObjCourse::_lookupTitle($course['obj_id'])),
                     ''
                 )->withDedicatedName('options_'  . $course['obj_id']);
 
@@ -972,7 +967,7 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
         parse_str($uri->getQuery(), $query);
         $query['tracking_tool_ref_id'] = (int) $propertiesRefId;
 
-        return (string) $uri->withQuery(http_build_query($query));
+        return $uri->getPath() . '?' . http_build_query($query);
     }
 
     /**
@@ -1193,6 +1188,11 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
             );
 
         $items = $itemPresentation->getAllRefIds();
+
+        if($items === null) {
+            $items = [];
+        }
+
         $groupRefId = null;
         foreach ($items as $itemRefId) {
             $itemObject = \ilObjectFactory::getInstanceByRefId($itemRefId);
@@ -1211,7 +1211,6 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
      * @return array
      * @throws Exception
      */
-    #[NoReturn]
     private function excludeCoursesWithNoPrintPermission(array $coursesToPrint): array
     {
         foreach ($coursesToPrint as $objId => $course) {
