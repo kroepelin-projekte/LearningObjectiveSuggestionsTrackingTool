@@ -237,46 +237,57 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
             return ' ';
         }
 
-        $refId = (int) ($a_properties['ref_id'] ?? 0);
+        try {
+            $refId = (int) ($a_properties['ref_id'] ?? 0);
 
-        if (!empty($a_properties) && !self::isValidCourseRefId($refId)) {
-            if ($a_mode === 'presentation') {
-                return ' ';
+            if (!self::isValidCourseRefId($refId)) {
+                if ($a_mode === 'presentation') {
+                    return ' ';
+                }
+                return htmlspecialchars($this->pl->txt('give_existing_ref_id_course'), ENT_QUOTES);
             }
-            return htmlspecialchars($this->pl->txt('updated_failure'), ENT_QUOTES);
-        }
 
-        if ($a_mode === 'presentation' && !empty($a_properties)) {
-            $participants = ilCourseParticipants::getInstance($refId);
-            if (!$participants->isAssigned($DIC->user()->getId())) {
-                return ' ';
-            }
-        }
-
-        $this->pluginTemplate();
-
-        if (!empty($a_properties)) {
-            $learningObjectives = TrackingTool::getTrackingToolLearningObjectives(
-                $DIC->user()->getId(),
-                (string) $refId
-            );
-
-            $notRecommendedLearningObjectives = [];
-            foreach ($learningObjectives as $key => $learningObjective) {
-                if (!$learningObjective['suggested']) {
-                    $notRecommendedLearningObjectives[$key] = $learningObjective;
-                    unset($learningObjectives[$key]);
+            if ($a_mode === 'presentation' && !empty($a_properties)) {
+                $participants = ilCourseParticipants::getInstance($refId);
+                if (!$participants->isAssigned($DIC->user()->getId())) {
+                    return ' ';
                 }
             }
 
-            $this->buildAccordionHtml(
-                $learningObjectives,
-                $notRecommendedLearningObjectives,
-                (string) $refId,
-                isset($a_properties['entry_test']) && (bool) $a_properties['entry_test']
+            $this->pluginTemplate();
+
+            if (!empty($a_properties)) {
+                $learningObjectives = TrackingTool::getTrackingToolLearningObjectives(
+                    $DIC->user()->getId(),
+                    (string) $refId
+                );
+
+                $notRecommendedLearningObjectives = [];
+                foreach ($learningObjectives as $key => $learningObjective) {
+                    if (!$learningObjective['suggested']) {
+                        $notRecommendedLearningObjectives[$key] = $learningObjective;
+                        unset($learningObjectives[$key]);
+                    }
+                }
+
+                $this->buildAccordionHtml(
+                    $learningObjectives,
+                    $notRecommendedLearningObjectives,
+                    (string) $refId,
+                    isset($a_properties['entry_test']) && (bool) $a_properties['entry_test']
+                );
+            }
+            return $this->tpl->get();
+        } catch (\Throwable $e) {
+            // Never let the tracking tool break the surrounding page; log and render nothing.
+            $DIC->logger()->root()->error(
+                'TrackingTool (' . LearningObjectiveSuggestionsTrackingToolConstants::PLUGIN_ID . '): '
+                . get_class($e) . ': ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine()
             );
+            $DIC->logger()->root()->error($e->getTraceAsString());
+
+            return ' ';
         }
-        return $this->tpl->get();
     }
 
     /**
@@ -425,7 +436,6 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                 const lastname = $('#$id input[name="form/user_data/lastname"]');
                 const eMentoring = $('#$id fieldset[data-il-ui-input-name="form/ementoring"] input[name="form/ementoring"]');
                 const homework = $('#$id fieldset[data-il-ui-input-name="form/homework"]');
-                const individualAssesments = $('#$id fieldset[data-il-ui-input-name="form/individual_assesments"]');
                 const sessions = $('#$id fieldset[data-il-ui-input-name="form/sessions"]');
                 
                 submitButton.attr('disabled', true);
@@ -457,11 +467,9 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                 eMentoring.change(function() {
                   if($(this).is(':checked')) {
                     homework.css('display', 'grid');
-                    individualAssesments.css('display', 'grid');
                     sessions.css('display', 'grid');
                   } else {
                     homework.css('display', 'none');
-                    individualAssesments.css('display', 'none');
                     sessions.css('display', 'none');
                   }
                 }); 

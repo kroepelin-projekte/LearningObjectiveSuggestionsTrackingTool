@@ -371,10 +371,6 @@
     display: none;
 }
 
-.container-tracking-tool .modal-dialog fieldset[data-il-ui-input-name="form/individual_assesments"]  {
-    display: none;
-}
-
 .container-tracking-tool .modal-dialog fieldset[data-il-ui-input-name="form/sessions"]  {
     display: none;
 }

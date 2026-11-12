@@ -17,4 +17,4 @@ As an ILIAS administrator, go to "Administration -> Plugins" and install/activat
 
 ## Dependencies
 
-Plugins ParticipationCertificate und LearningObjectiveSuggestions must be installed and activated
+Plugins ParticipationCertificate and LearningObjectiveSuggestions must be installed and activated
