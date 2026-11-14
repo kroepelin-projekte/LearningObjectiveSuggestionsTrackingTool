@@ -9,8 +9,12 @@ This plugin adds the user interface for the `LearningObjectiveSuggestionsTrackin
 ## Installation
 Start at your ILIAS root directory
 ```
-mkdir -p Customizing/global/plugins/Services/COPage/PageComponent
-cd Customizing/global/plugins/Services/COPage/PageComponent
+mkdir -p public/Customizing/global/plugins/Services/COPage/PageComponent
+cd public/Customizing/global/plugins/Services/COPage/PageComponent
 git clone https://github.com/kroepelin-projekte/LearningObjectiveSuggestionsTrackingTool.git 
 ```
 As an ILIAS administrator, go to "Administration -> Plugins" and install/activate the plugin.
+
+## Dependencies
+
+Plugins ParticipationCertificate and LearningObjectiveSuggestions must be installed and activated

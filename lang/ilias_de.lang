@@ -30,6 +30,9 @@ entry_test_display#:#Einstiegsstest Anzeigen
 print_certificate#:#Teilnahmebescheinigung Drucken
 homework#:#Übungen
 no_courses_selected#:#Sie haben keine Kurse ausgewählt
-individual_assesments#:#Individuelle Bewertungen
 sessions#:#Sitzungen
 final_test#:#Lernzuwachs-Test
+updated_success#:#Tracking Tool wurde gespeichert.
+updated_failure#:#Bitte geben Sie die Ref-ID eines existierenden Kurses ein.
+tracking_tool_created#:#Tracking Tool wurde angelegt
+give_existing_ref_id_course#:#Bitte geben Sie die Ref-ID eines existierenden Kurses ein.
