@@ -315,8 +315,8 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
         $userId = $this->dic->user()->getId();
 
         $userData = ilPartCertUsersData::getData($participationCertificatePlugin, [$userId]);
-        $firstname = $userData[$userId]->getPartCertFirstname();
-        $lastname = $userData[$userId]->getPartCertLastname();
+        $firstname = ($userData[$userId] ?? null)?->getPartCertFirstname();
+        $lastname = ($userData[$userId] ?? null)?->getPartCertLastname();
 
         $firstnameField = $this->factory->input()->field()->text($this->pl->txt('firstname'))
                                         ->withDedicatedName('firstname')
@@ -1115,6 +1115,30 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
             $this->sendJsonResponse(['success' => false]);
         }
 
+        if ($firstname === '' || $lastname === '') {
+            $this->sendJsonResponse(['success' => false]);
+        }
+
+        $participationCertificatePlugin = ilParticipationCertificatePlugin::getInstance();
+        $userData = ilPartCertUsersData::getData($participationCertificatePlugin, [$userId]);
+        $storedUserData = $userData[$userId] ?? null;
+
+        $storedFirstname = trim((string) $storedUserData?->getPartCertFirstname());
+        $storedLastname = trim((string) $storedUserData?->getPartCertLastname());
+
+        $profileFieldsToSave = [];
+        if ($storedFirstname === '') {
+            $profileFieldsToSave['udf_firstname'] = trim($firstname);
+        }
+
+        if ($storedLastname === '') {
+            $profileFieldsToSave['udf_lastname'] = trim($lastname);
+        }
+
+        if (!empty($profileFieldsToSave)) {
+            $this->saveNameToProfile($profileFieldsToSave);
+        }
+
         if (count(array_keys($coursesToPrint)) === 1) {
             $courseObjIdToPrint = array_key_first($coursesToPrint);
             $course = $coursesToPrint[$courseObjIdToPrint];
@@ -1283,6 +1307,35 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                 $refinery->always(null)
             ])
         );
+    }
+
+    /**
+     * Writes the given names into the user-defined profile fields that the
+     * ParticipationCertificate plugin uses for first and last name.
+     *
+     * @param array<string, string> $profileFieldsToSave e.g. ['udf_firstname' => 'Anna']
+     */
+    private function saveNameToProfile(array $profileFieldsToSave): void
+    {
+        $user = $this->dic->user();
+        $profileData = $user->getProfileData();
+        $changed = false;
+
+        foreach ($profileFieldsToSave as $configKey => $value) {
+            $config = ilParticipationCertificateConfig::where(['config_key' => $configKey])->first();
+            $fieldId = $config?->getConfigValue();
+            if ($fieldId === null || $fieldId === '') {
+                continue;
+            }
+
+            // Additional profile fields are stored as a list of values per field.
+            $profileData = $profileData->withAdditionalFieldByIdentifier((string) $fieldId, [$value]);
+            $changed = true;
+        }
+
+        if ($changed) {
+            $user->withProfileData($profileData)->update();
+        }
     }
 
     /**
