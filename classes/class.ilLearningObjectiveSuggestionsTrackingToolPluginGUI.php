@@ -400,18 +400,21 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
         }
 
         if (!empty($coursesWithActivatedEMentoring)) {
-            $optionsFields['ementoring'] = $this->factory->input()->field()->checkbox(
-                $this->pl->txt('ementoring')
-            )->withDedicatedName('ementoring');
-
-            $optionsFields['homework'] = $this->factory->input()->field()->checkbox(
+            $checkboxesEmentoring['homework'] = $this->factory->input()->field()->checkbox(
                 $this->pl->txt('homework')
             )->withDedicatedName('homework');
 
-
-            $optionsFields['sessions'] = $this->factory->input()->field()->checkbox(
+            $checkboxesEmentoring['sessions'] = $this->factory->input()->field()->checkbox(
                 $this->pl->txt('sessions')
             )->withDedicatedName('sessions');
+
+            $sectionEmentoring = $this->factory->input()->field()->section(
+                $checkboxesEmentoring,
+                htmlspecialchars($this->pl->txt('ementoring')),
+                ''
+            )->withDedicatedName('ementoring');
+
+            $optionsFields['ementoring'] = $sectionEmentoring;
         }
         $fields = array_merge($userFields, $info, $optionsFields);
 
@@ -463,16 +466,6 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                  lastname.change(function() {
                    toggleButton()
                 });
-                
-                eMentoring.change(function() {
-                  if($(this).is(':checked')) {
-                    homework.css('display', 'grid');
-                    sessions.css('display', 'grid');
-                  } else {
-                    homework.css('display', 'none');
-                    sessions.css('display', 'none');
-                  }
-                }); 
                 
                 closeButton.click(function() {
                    redirection();
@@ -1053,18 +1046,19 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
         }
 
         $eMentoring = false;
-        if ($request->has('form/ementoring')) {
+        $homework = false;
+        if ($request->has('form/ementoring/homework')) {
+            $homework = true;
             $eMentoring = true;
         }
 
-        $homework = false;
-        if ($request->has('form/homework')) {
-            $homework = true;
-        }
-
         $sessions = false;
-        if ($request->has('form/sessions')) {
+        if ($request->has('form/ementoring/sessions')) {
             $sessions = true;
+
+            if (!$eMentoring) {
+                $eMentoring = true;
+            }
         }
 
         $userId = $this->dic->user()->getId();

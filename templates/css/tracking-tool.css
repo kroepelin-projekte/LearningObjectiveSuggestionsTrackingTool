@@ -363,18 +363,6 @@
     display: none;
 }
 
-.container-tracking-tool .modal-dialog fieldset[data-il-ui-input-name="form/ementoring"] label  {
-    font-weight: bold;
-}
-
-.container-tracking-tool .modal-dialog fieldset[data-il-ui-input-name="form/homework"]  {
-    display: none;
-}
-
-.container-tracking-tool .modal-dialog fieldset[data-il-ui-input-name="form/sessions"]  {
-    display: none;
-}
-
 .container-tracking-tool .entry-test  {
     padding-top: 50px;
 }
