@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.0]
+### Updated
+* Plugin for release_11 updated
+
+### Notes
+* After updating, run `composer du` so the ilCtrl artifact is rebuilt (the `create` command then requires a CSRF token)
+
 ## [2.2.0]
 ### Added
 * Not suggested courses in tracking tool
