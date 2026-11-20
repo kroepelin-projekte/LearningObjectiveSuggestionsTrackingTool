@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.0.1]
+### Updated
+* Save firstname and lastname in profil data on printing
+* The structure of the options in modal box
+
 ## [3.0.0]
 ### Updated
 * Plugin for release_11 updated
