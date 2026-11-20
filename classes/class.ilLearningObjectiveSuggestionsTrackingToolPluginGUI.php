@@ -314,8 +314,8 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
         $userId = $this->dic->user()->getId();
 
         $userData = ilPartCertUsersData::getData($participationCertificatePlugin, [$userId]);
-        $firstname = $userData[$userId]->getPartCertFirstname();
-        $lastname = $userData[$userId]->getPartCertLastname();
+        $firstname = ($userData[$userId] ?? null)?->getPartCertFirstname();
+        $lastname = ($userData[$userId] ?? null)?->getPartCertLastname();
 
         $firstnameField = $this->factory->input()->field()->text($this->pl->txt('firstname'))
                                         ->withDedicatedName('firstname')
@@ -399,18 +399,21 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
         }
 
         if (!empty($coursesWithActivatedEMentoring)) {
-            $optionsFields['ementoring'] = $this->factory->input()->field()->checkbox(
-                $this->pl->txt('ementoring')
-            )->withDedicatedName('ementoring');
-
-            $optionsFields['homework'] = $this->factory->input()->field()->checkbox(
+            $checkboxesEmentoring['homework'] = $this->factory->input()->field()->checkbox(
                 $this->pl->txt('homework')
             )->withDedicatedName('homework');
 
-
-            $optionsFields['sessions'] = $this->factory->input()->field()->checkbox(
+            $checkboxesEmentoring['sessions'] = $this->factory->input()->field()->checkbox(
                 $this->pl->txt('sessions')
             )->withDedicatedName('sessions');
+
+            $sectionEmentoring = $this->factory->input()->field()->section(
+                $checkboxesEmentoring,
+                htmlspecialchars($this->pl->txt('ementoring')),
+                ''
+            )->withDedicatedName('ementoring');
+
+            $optionsFields['ementoring'] = $sectionEmentoring;
         }
         $fields = array_merge($userFields, $info, $optionsFields);
 
@@ -462,16 +465,6 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                  lastname.change(function() {
                    toggleButton()
                 });
-                
-                eMentoring.change(function() {
-                  if($(this).is(':checked')) {
-                    homework.css('display', 'grid');
-                    sessions.css('display', 'grid');
-                  } else {
-                    homework.css('display', 'none');
-                    sessions.css('display', 'none');
-                  }
-                }); 
                 
                 closeButton.click(function() {
                    redirection();
@@ -1052,18 +1045,19 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
         }
 
         $eMentoring = false;
-        if ($request->has('form/ementoring')) {
+        $homework = false;
+        if ($request->has('form/ementoring/homework')) {
+            $homework = true;
             $eMentoring = true;
         }
 
-        $homework = false;
-        if ($request->has('form/homework')) {
-            $homework = true;
-        }
-
         $sessions = false;
-        if ($request->has('form/sessions')) {
+        if ($request->has('form/ementoring/sessions')) {
             $sessions = true;
+
+            if (!$eMentoring) {
+                $eMentoring = true;
+            }
         }
 
         $userId = $this->dic->user()->getId();
@@ -1112,6 +1106,30 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
             $tpl = $this->dic->ui()->mainTemplate();
             $tpl->setOnScreenMessage('failure', $this->pl->txt('no_courses_selected'), true);
             $this->sendJsonResponse(['success' => false]);
+        }
+
+        if ($firstname === '' || $lastname === '') {
+            $this->sendJsonResponse(['success' => false]);
+        }
+
+        $participationCertificatePlugin = ilParticipationCertificatePlugin::getInstance();
+        $userData = ilPartCertUsersData::getData($participationCertificatePlugin, [$userId]);
+        $storedUserData = $userData[$userId] ?? null;
+
+        $storedFirstname = trim((string) $storedUserData?->getPartCertFirstname());
+        $storedLastname = trim((string) $storedUserData?->getPartCertLastname());
+
+        $profileFieldsToSave = [];
+        if ($storedFirstname === '') {
+            $profileFieldsToSave['udf_firstname'] = trim($firstname);
+        }
+
+        if ($storedLastname === '') {
+            $profileFieldsToSave['udf_lastname'] = trim($lastname);
+        }
+
+        if (!empty($profileFieldsToSave)) {
+            $this->saveNameToProfile($profileFieldsToSave);
         }
 
         if (count(array_keys($coursesToPrint)) === 1) {
@@ -1282,6 +1300,35 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
                 $refinery->always(null)
             ])
         );
+    }
+
+    /**
+     * Writes the given names into the user-defined profile fields that the
+     * ParticipationCertificate plugin uses for first and last name.
+     *
+     * @param array<string, string> $profileFieldsToSave e.g. ['udf_firstname' => 'Anna']
+     */
+    private function saveNameToProfile(array $profileFieldsToSave): void
+    {
+        $user = $this->dic->user();
+        $profileData = $user->getProfileData();
+        $changed = false;
+
+        foreach ($profileFieldsToSave as $configKey => $value) {
+            $config = ilParticipationCertificateConfig::where(['config_key' => $configKey])->first();
+            $fieldId = $config?->getConfigValue();
+            if ($fieldId === null || $fieldId === '') {
+                continue;
+            }
+
+            // Additional profile fields are stored as a list of values per field.
+            $profileData = $profileData->withAdditionalFieldByIdentifier((string) $fieldId, [$value]);
+            $changed = true;
+        }
+
+        if ($changed) {
+            $user->withProfileData($profileData)->update();
+        }
     }
 
     /**
