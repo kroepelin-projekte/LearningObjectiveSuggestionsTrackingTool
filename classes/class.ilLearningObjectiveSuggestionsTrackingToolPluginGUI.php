@@ -12,7 +12,6 @@ use ILIAS\DI\Container;
 use ILIAS\UI\Factory;
 use ILIAS\UI\Renderer;
 use ILIAS\Container\InternalDomainService;
-use JetBrains\PhpStorm\NoReturn;
 use ILIAS\Filesystem\Stream\Streams;
 
 /**
@@ -241,10 +240,10 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
             $refId = (int) ($a_properties['ref_id'] ?? 0);
 
             if (!self::isValidCourseRefId($refId)) {
-                if ($a_mode === 'presentation') {
+                if ($a_mode !== ilPageObjectGUI::EDIT && $a_mode !== ilPageObjectGUI::PREVIEW) {
                     return ' ';
                 }
-                return htmlspecialchars($this->pl->txt('give_existing_ref_id_course'), ENT_QUOTES);
+                return htmlspecialchars($this->pl->txt('updated_failure'), ENT_QUOTES);
             }
 
             if ($a_mode === 'presentation' && !empty($a_properties)) {
