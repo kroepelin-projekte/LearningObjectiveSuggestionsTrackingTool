@@ -1012,36 +1012,36 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
 
         $firstname = '';
         if ($request->has('form/user_data/firstname')) {
-            $firstname = $request->retrieve(
+            $firstname = trim($request->retrieve(
                 'form/user_data/firstname',
                 $refinery->kindlyTo()->string()
-            );
-
-            if (empty($firstname)) {
-                $this->sendJsonResponse(['success' => false]);
-            }
+            ));
         } elseif ($request->has('form/user_data/hidden_firstname')) {
-            $firstname = $request->retrieve(
+            $firstname = trim($request->retrieve(
                 'form/user_data/hidden_firstname',
                 $refinery->kindlyTo()->string()
-            );
+            ));
         }
 
         $lastname = '';
         if ($request->has('form/user_data/lastname')) {
-            $lastname = $request->retrieve(
+            $lastname = trim($request->retrieve(
                 'form/user_data/lastname',
                 $refinery->kindlyTo()->string()
-            );
-
-            if (empty($lastname)) {
-                $this->sendJsonResponse(['success' => false]);
-            }
+            ));
         } elseif ($request->has('form/user_data/hidden_lastname')) {
-            $lastname = $request->retrieve(
+            $lastname = trim($request->retrieve(
                 'form/user_data/hidden_lastname',
                 $refinery->kindlyTo()->string()
-            );
+            ));
+        }
+
+        if (empty($firstname)) {
+            $this->sendJsonResponse(['success' => false]);
+        }
+
+        if (empty($lastname)) {
+            $this->sendJsonResponse(['success' => false]);
         }
 
         $eMentoring = false;
