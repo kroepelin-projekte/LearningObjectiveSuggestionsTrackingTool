@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.0.1]
+## [3.1.0]
 ### Updated
 * Save firstname and lastname in profil data on printing
 * The structure of the options in modal box
