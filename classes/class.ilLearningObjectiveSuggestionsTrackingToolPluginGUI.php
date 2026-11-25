@@ -31,6 +31,8 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
 
     public const string CMD_CANCEL = 'cancel';
 
+    private const string BUTTON_STYLE_PATTERN = '/^[a-zA-Z][a-zA-Z0-9]*$/';
+
     private $tpl;
 
     private Container $dic;
@@ -44,6 +46,8 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
     private Renderer $renderer;
 
     private int $userId;
+
+    private string $buttonStyle = '';
 
     public function __construct()
     {
@@ -144,11 +148,25 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
         $inputEntryTest = $field->checkbox($this->plugin->txt('entry_test_display'))
                             ->withValue(!empty($properties['entry_test']));
 
+        $refinery = $DIC->refinery();
+        $inputButtonStyle = $field->text(
+            $this->plugin->txt('button_style'),
+            $this->plugin->txt('button_style_info')
+        )->withValue((string) ($properties['button_style'] ?? ''))
+         ->withAdditionalTransformation($refinery->custom()->transformation(
+             static fn($value): string => trim((string) $value)
+         ))
+         ->withAdditionalTransformation($refinery->custom()->constraint(
+             static fn(string $value): bool => $value === '' || preg_match(self::BUTTON_STYLE_PATTERN, $value) === 1,
+             $this->plugin->txt('button_style_invalid')
+         ));
+
         $form = $this->factory->input()->container()->form()->standard(
             $DIC->ctrl()->getFormAction($this, 'update'),
             [
                 'ref_id' => $inputRefId,
-                'entry_test' => $inputEntryTest
+                'entry_test' => $inputEntryTest,
+                'button_style' => $inputButtonStyle
             ]
         );
 
@@ -202,6 +220,7 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
         $properties = $this->getProperties();
         $properties['ref_id'] = $refId;
         $properties['entry_test'] = (bool) $formData['entry_test'];
+        $properties['button_style'] = $formData['button_style'];
 
         if ($this->updateElement($properties)) {
             $tpl->setOnScreenMessage('success', $this->plugin->txt('updated_success'), true);
@@ -237,6 +256,8 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
         }
 
         try {
+            $buttonStyle = (string) ($a_properties['button_style'] ?? '');
+            $this->buttonStyle = preg_match(self::BUTTON_STYLE_PATTERN, $buttonStyle) === 1 ? $buttonStyle : '';
             $refId = (int) ($a_properties['ref_id'] ?? 0);
 
             if (!self::isValidCourseRefId($refId)) {
@@ -779,15 +800,25 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
 
         if (!empty($entryTest)) {
             $linkEntryTestResults = $this->buildEntryTestResultsLink((int) $entryTest['itest']);
-            $entryTestLink = $this->factory->link()->bulky(
+            return $this->renderActionLink(
                 $this->factory->symbol()->icon()->standard('tst', ''),
                 $this->pl->txt('entry_test_button'),
                 $this->toAbsoluteUri($linkEntryTestResults)
             );
-
-            return $this->renderAction($entryTestLink);
         }
         return '';
+    }
+
+    private function renderActionLink(
+        \ILIAS\UI\Component\Symbol\Icon\Icon $icon,
+        string $label,
+        \ILIAS\Data\URI $target,
+        string $modifierClass = ''
+    ): string {
+        if ($this->buttonStyle !== '') {
+            return $this->wrapAction($this->renderContentStyleAction($icon, $label, (string) $target), $modifierClass);
+        }
+        return $this->renderAction($this->factory->link()->bulky($icon, $label, $target), $modifierClass);
     }
 
     // KS links carry no own class, the wrapper scopes the plugin CSS.
@@ -795,9 +826,25 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
         \ILIAS\UI\Component\Component $component,
         string $modifierClass = ''
     ): string {
-        return '<div class="' . trim('tracking-tool-action ' . $modifierClass) . '">'
-            . $this->renderer->render($component)
-            . '</div>';
+        return $this->wrapAction($this->renderer->render($component), $modifierClass);
+    }
+
+    private function wrapAction(string $html, string $modifierClass = ''): string
+    {
+        return '<div class="' . trim('tracking-tool-action ' . $modifierClass) . '">' . $html . '</div>';
+    }
+
+    // Own <a>: KS links take no custom class, the content style needs ilc_section_<name>; $attributes must be trusted.
+    private function renderContentStyleAction(
+        \ILIAS\UI\Component\Symbol\Icon\Icon $icon,
+        string $label,
+        string $href,
+        string $attributes = ''
+    ): string {
+        return '<a class="ilc_section_' . $this->buttonStyle . ' tracking-tool-action-cs" href="'
+            . htmlspecialchars($href, ENT_QUOTES) . '"' . $attributes . '>'
+            . $this->renderer->render($icon)
+            . '<span>' . htmlspecialchars($label, ENT_QUOTES) . '</span></a>';
     }
 
     private function toAbsoluteUri(string $relativeLink): \ILIAS\Data\URI
@@ -952,16 +999,15 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
             if (!$accessToPrint) {
                 $this->tpl->setVariable('PRINT_BUTTON', '');
             } else {
-                $printLink = $this->factory->link()->bulky(
+                $this->tpl->setVariable('PRINT_BUTTON', $this->renderActionLink(
                     $this->factory->symbol()->icon()->custom(
                         LearningObjectiveSuggestionsTrackingToolConstants::PLUGIN_DIRECTORY . '/templates/images/icon_file.svg',
                         ''
                     ),
                     $this->pl->txt('print_certificate_button'),
-                    $this->toAbsoluteUri($this->buildPrintLink($propertiesRefId))
-                );
-
-                $this->tpl->setVariable('PRINT_BUTTON', $this->renderAction($printLink, 'tracking-tool-action-print'));
+                    $this->toAbsoluteUri($this->buildPrintLink($propertiesRefId)),
+                    'tracking-tool-action-print'
+                ));
             }
         }
 

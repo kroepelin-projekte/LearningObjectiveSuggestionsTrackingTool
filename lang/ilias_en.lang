@@ -27,6 +27,9 @@ ementoring#:#E-Mentoring
 suggested_courses_title#:#Suggested Courses
 not_suggested_courses_title#:#Not Suggested Courses
 entry_test_display#:#Display Entry Text
+button_style#:#Content style format for buttons
+button_style_info#:#Name of a section format from the content style of the page (letters and digits only, starting with a letter). Empty = standard ILIAS look.
+button_style_invalid#:#Only letters and digits are allowed, the first character must be a letter.
 print_certificate#:#Certificate Print
 print_certificate_button#:#Download certificate of participation
 homework#:#Homework
