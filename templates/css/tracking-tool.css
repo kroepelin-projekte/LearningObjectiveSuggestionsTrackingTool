@@ -355,10 +355,6 @@
     font-weight: normal;
 }
 
-.container-tracking-tool .print-button-hidden  {
-    display: none;
-}
-
 .container-tracking-tool .modal-dialog form button:nth-child(2)  {
     display: none;
 }
@@ -379,12 +375,6 @@
     padding-top: 50px;
 }
 
-.container-tracking-tool .icon-file  {
-    float: right;
-    height: 100px;
-    width: 50px;
-}
-
 .container-tracking-tool .container-initial-test-button  {
     border-top: 1px solid #A2BAE1;
     margin-top: 20px;
@@ -392,6 +382,14 @@
     padding-top: 15px;
 }
 
-.container-tracking-tool .container-initial-test-button a:link  {
-    color: #A2BAE1;
+.container-tracking-tool .tracking-tool-action-print  {
+    float: right;
+    margin: 0 0 10px 10px;
+}
+
+@media (max-width: 767px)  {
+    .container-tracking-tool .tracking-tool-action-print  {
+        float: none;
+        margin: 0 0 10px;
+    }
 }

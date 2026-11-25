@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+### Changed
+* Certificate print and entry check results are now KS bulky links with icon and text (new language keys `print_certificate_button`, `entry_test_button`; `entry_test` removed)
+* Print link always points to `ilias.php` with the current query instead of reusing the request path
+
+### Notes
+* The plugin version is unchanged, so after updating the code reload the plugin languages (Administration > Plugins > Refresh Languages)
+
 ## [3.0.0]
 ### Updated
 * Plugin for release_11 updated

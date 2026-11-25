@@ -779,11 +779,30 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
 
         if (!empty($entryTest)) {
             $linkEntryTestResults = $this->buildEntryTestResultsLink((int) $entryTest['itest']);
-            $entryTestLink = $this->factory->link()->standard($this->pl->txt('entry_test'), $linkEntryTestResults);
+            $entryTestLink = $this->factory->link()->bulky(
+                $this->factory->symbol()->icon()->standard('tst', ''),
+                $this->pl->txt('entry_test_button'),
+                $this->toAbsoluteUri($linkEntryTestResults)
+            );
 
-            return $this->renderer->render($entryTestLink);
+            return $this->renderAction($entryTestLink);
         }
         return '';
+    }
+
+    // KS links carry no own class, the wrapper scopes the plugin CSS.
+    private function renderAction(
+        \ILIAS\UI\Component\Component $component,
+        string $modifierClass = ''
+    ): string {
+        return '<div class="' . trim('tracking-tool-action ' . $modifierClass) . '">'
+            . $this->renderer->render($component)
+            . '</div>';
+    }
+
+    private function toAbsoluteUri(string $relativeLink): \ILIAS\Data\URI
+    {
+        return new \ILIAS\Data\URI(rtrim(ILIAS_HTTP_PATH, '/') . '/' . ltrim($relativeLink, '/'));
     }
 
     /**
@@ -933,12 +952,16 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
             if (!$accessToPrint) {
                 $this->tpl->setVariable('PRINT_BUTTON', '');
             } else {
-                $printLink = $this->buildPrintLink($propertiesRefId);
-                $printButton = '<a href="' . htmlspecialchars($printLink, ENT_QUOTES) . '" class="print-button-visible">';
-                $printButton .= '<img src="Customizing/global/plugins/Services/COPage/PageComponent/LearningObjectiveSuggestionsTrackingTool/templates/images/icon_file.svg" class="icon-file">';
-                $printButton .= '</a>';
+                $printLink = $this->factory->link()->bulky(
+                    $this->factory->symbol()->icon()->custom(
+                        LearningObjectiveSuggestionsTrackingToolConstants::PLUGIN_DIRECTORY . '/templates/images/icon_file.svg',
+                        ''
+                    ),
+                    $this->pl->txt('print_certificate_button'),
+                    $this->toAbsoluteUri($this->buildPrintLink($propertiesRefId))
+                );
 
-                $this->tpl->setVariable('PRINT_BUTTON', $printButton);
+                $this->tpl->setVariable('PRINT_BUTTON', $this->renderAction($printLink, 'tracking-tool-action-print'));
             }
         }
 
@@ -966,15 +989,14 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
     /**
      * Link back to the page currently displaying the tracking tool (whatever container
      * it lives in), with tracking_tool_ref_id added so the print modal opens.
+     * Fixed script instead of the client-controlled request path (XSS via path).
      */
     private function buildPrintLink(string $propertiesRefId): string
     {
-        $uri = $this->dic->http()->request()->getUri();
-
-        parse_str($uri->getQuery(), $query);
+        parse_str($this->dic->http()->request()->getUri()->getQuery(), $query);
         $query['tracking_tool_ref_id'] = (int) $propertiesRefId;
 
-        return $uri->getPath() . '?' . http_build_query($query);
+        return 'ilias.php?' . http_build_query($query);
     }
 
     /**

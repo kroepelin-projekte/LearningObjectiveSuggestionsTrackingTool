@@ -19,7 +19,7 @@ firstname#:#Firstname
 lastname#:#Lastname
 suggested_courses#:#Suggested Courses
 not_suggested_courses#:#Not suggested courses
-entry_test#:#>> My results in Entry-Check
+entry_test_button#:#Go to my entry check results
 entry_test_label#:#Final Test-Check
 modal_box_info#:#Notice: The data entered here will be stored in accordance with the privacy policy of this platform.
 modal_box_submit_button#:#Print Certificate
@@ -28,6 +28,7 @@ suggested_courses_title#:#Suggested Courses
 not_suggested_courses_title#:#Not Suggested Courses
 entry_test_display#:#Display Entry Text
 print_certificate#:#Certificate Print
+print_certificate_button#:#Download certificate of participation
 homework#:#Homework
 no_courses_selected#:#No course selected
 sessions#:#Sessions

@@ -19,7 +19,7 @@ firstname#:#Vorname
 lastname#:#Nachname
 suggested_courses#:#Empfohlene Kurse
 not_suggested_courses#:#Nicht-Empfohlene Kurse
-entry_test#:#>> Meine Ergebnisse im Vorwissen-Check
+entry_test_button#:#Zu den VC-Ergebnissen
 entry_test_label#:#Lernzuwachs-Check
 modal_box_info#:#Hinweis: Die hier eingegebenen Daten werden gemäß der Datenschutzerklärung dieser Platform gespeichert.
 modal_box_submit_button#:#Teilnahmebescheinigung drucken
@@ -28,6 +28,7 @@ suggested_courses_title#:#Empfohlene Kurse
 not_suggested_courses_title#:#Zusätzliches Kursangebot
 entry_test_display#:#Einstiegsstest Anzeigen
 print_certificate#:#Teilnahmebescheinigung Drucken
+print_certificate_button#:#Teilnahmebescheinigung herunterladen
 homework#:#Übungen
 no_courses_selected#:#Sie haben keine Kurse ausgewählt
 sessions#:#Sitzungen
