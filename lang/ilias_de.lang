@@ -19,7 +19,7 @@ firstname#:#Vorname
 lastname#:#Nachname
 suggested_courses#:#Empfohlene Kurse
 not_suggested_courses#:#Nicht-Empfohlene Kurse
-entry_test#:#>> Meine Ergebnisse im Vorwissen-Check
+entry_test_button#:#Zu den VC-Ergebnissen
 entry_test_label#:#Lernzuwachs-Check
 modal_box_info#:#Hinweis: Die hier eingegebenen Daten werden gemäß der Datenschutzerklärung dieser Platform gespeichert.
 modal_box_submit_button#:#Teilnahmebescheinigung drucken
@@ -27,7 +27,11 @@ ementoring#:#E-Mentoring
 suggested_courses_title#:#Empfohlene Kurse
 not_suggested_courses_title#:#Zusätzliches Kursangebot
 entry_test_display#:#Einstiegsstest Anzeigen
+button_style#:#Content-Style-Format für Buttons
+button_style_info#:#Name eines Abschnittsformats aus dem Content Style der Seite (nur Buchstaben und Ziffern, beginnend mit einem Buchstaben). Leer = ILIAS-Standarddarstellung.
+button_style_invalid#:#Nur Buchstaben und Ziffern sind erlaubt, das erste Zeichen muss ein Buchstabe sein.
 print_certificate#:#Teilnahmebescheinigung Drucken
+print_certificate_button#:#Teilnahmebescheinigung herunterladen
 homework#:#Übungen
 no_courses_selected#:#Sie haben keine Kurse ausgewählt
 sessions#:#Sitzungen
