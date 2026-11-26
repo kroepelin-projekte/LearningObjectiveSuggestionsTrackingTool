@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [3.2.0]
 ### Changed
 * Certificate print and entry check results are now KS bulky links with icon and text (new language keys `print_certificate_button`, `entry_test_button`; `entry_test` removed)
 * Print link always points to `ilias.php` with the current query instead of reusing the request path
@@ -9,7 +9,7 @@
 * Edit form: optional content style format for the buttons (property `button_style`, name of a section format of the page's content style). If set, both buttons are rendered as `<a class="ilc_section_<name>">` and take their look from the content style; empty uses the standard ILIAS look (new language keys `button_style`, `button_style_info`, `button_style_invalid`)
 
 ### Notes
-* The plugin version is unchanged, so after updating the code reload the plugin languages (Administration > Plugins > Refresh Languages)
+* After updating, run the plugin update (Administration > Plugins) so the plugin languages are reloaded
 
 ## [3.0.0]
 ### Updated
