@@ -4,16 +4,16 @@ description#:#My courses – based on my individual learning recommendation.
 learning_suggestion#:#Learning recommendation:
 lets_get_started#:#let's get started
 cmd_insert#:#Insert Tracking Tool
-legends_text_legends#:#Legende - Das bedeutet die Icons:
-legends_text_sos#:#Achtung:
-legends_text_sos_2#:#Je mehr Icons, desto stärker die Empfehlung, diesen Kurs weiter zu bearbeiten.
-legends_text_last_visit#:#Letzter Besuch:
-legends_text_last_visit_2#:#Markiert den zuletzt geöffneten Kurs.
-legends_text_percent#:#Prozentzahl:
-legends_text_percent_2#:#Gesamtleistung im Kurs oder Test.
-legends_text_percent_3#:#4 von 4
-legends_text_completed#:#Abgeschlossen:
-legends_text_completed_2#:#Der Kurs wurde vollständig bearbeitet!
+legends_text_legends#:#Legend - What the icons mean:
+legends_text_sos#:#Attention:
+legends_text_sos_2#:#The more icons, the stronger the recommendation to continue working on this course.
+legends_text_last_visit#:#Last visit:
+legends_text_last_visit_2#:#Marks the most recently opened course.
+legends_text_percent#:#Learning objectives:
+legends_text_percent_2#:#Number of completed learning objectives
+legends_text_percent_3#:#4 of 4
+legends_text_completed#:#Completed:
+legends_text_completed_2#:#The course has been fully completed!
 ref_id#:#Ref Id
 firstname#:#Firstname
 lastname#:#Lastname
@@ -26,7 +26,7 @@ modal_box_submit_button#:#Print Certificate
 ementoring#:#E-Mentoring
 suggested_courses_title#:#Suggested Courses
 not_suggested_courses_title#:#Not Suggested Courses
-entry_test_display#:#Display Entry Text
+entry_test_display#:#Display Entry Test
 print_certificate#:#Certificate Print
 homework#:#Homework
 no_courses_selected#:#No course selected

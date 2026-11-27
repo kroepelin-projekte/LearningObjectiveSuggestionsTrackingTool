@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Fixed
 * Course counter "x of y" in the tracking tool is now translated
+* English legend texts translated, typo in the entry test setting label fixed
 
 ### Notes
 * After updating, refresh the plugin languages (Administration → Plugins → Refresh Languages), since the version is unchanged
