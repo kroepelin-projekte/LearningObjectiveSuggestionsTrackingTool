@@ -26,7 +26,7 @@ modal_box_submit_button#:#Teilnahmebescheinigung drucken
 ementoring#:#E-Mentoring
 suggested_courses_title#:#Empfohlene Kurse
 not_suggested_courses_title#:#Zusätzliches Kursangebot
-entry_test_display#:#Einstiegsstest Anzeigen
+entry_test_display#:#Einstiegstest anzeigen
 button_style#:#Content-Style-Format für Buttons
 button_style_info#:#Name eines Abschnittsformats aus dem Content Style der Seite (nur Buchstaben und Ziffern, beginnend mit einem Buchstaben). Leer = ILIAS-Standarddarstellung.
 button_style_invalid#:#Nur Buchstaben und Ziffern sind erlaubt, das erste Zeichen muss ein Buchstabe sein.
