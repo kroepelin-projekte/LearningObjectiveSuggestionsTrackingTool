@@ -726,12 +726,10 @@ class ilLearningObjectiveSuggestionsTrackingToolPluginGUI extends ilPageComponen
             $html .= '<img src="' . LearningObjectiveSuggestionsTrackingToolConstants::PLUGIN_DIRECTORY . '/templates/images/' . $checkIcon . '">';
             $html .= '</span>';
 
-            $html .= '<span class="count-courses ' . $classStatusCourses . '-courses">' . strtr(
+            $html .= '<span class="count-courses ' . $classStatusCourses . '-courses">' . sprintf(
                 $this->pl->txt('count_courses_of'),
-                [
-                    '[completed]' => (string) $learningObjective['count_completed_courses'],
-                    '[total]' => (string) count($learningObjective['courses'])
-                ]
+                $learningObjective['count_completed_courses'],
+                count($learningObjective['courses'])
             ) . '</span>';
             if(!$notRecommendedCourses) {
                 $html .= '<div class="container-weight">';
