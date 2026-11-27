@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+* Course counter "x of y" in the tracking tool is now translated
+
+### Notes
+* After updating, refresh the plugin languages (Administration → Plugins → Refresh Languages), since the version is unchanged
+
 ## [3.0.0]
 ### Updated
 * Plugin for release_11 updated
