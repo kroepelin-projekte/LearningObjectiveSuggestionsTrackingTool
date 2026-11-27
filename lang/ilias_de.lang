@@ -39,3 +39,4 @@ final_test#:#Lernzuwachs-Test
 updated_success#:#Tracking Tool wurde gespeichert.
 updated_failure#:#Bitte geben Sie die Ref-ID eines existierenden Kurses ein.
 tracking_tool_created#:#Tracking Tool wurde angelegt
+count_courses_of#:#%s von %s

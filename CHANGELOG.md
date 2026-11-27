@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+* Course counter "x of y" in the tracking tool is now translated
+
+### Notes
+* After updating, refresh the plugin languages (Administration → Plugins → Refresh Languages), since the version is unchanged
+
 ## [3.2.0]
 ### Changed
 * Certificate print and entry check results are now KS bulky links with icon and text (new language keys `print_certificate_button`, `entry_test_button`; `entry_test` removed)
